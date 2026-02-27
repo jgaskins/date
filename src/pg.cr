@@ -11,4 +11,10 @@ class PG::ResultSet
   def read(date : Date.class)
     Date.new self
   end
+
+  def read(date : Date?.class)
+    if time = read(Time?)
+      Date.new time
+    end
+  end
 end

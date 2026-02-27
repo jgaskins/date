@@ -14,10 +14,14 @@ describe Date do
       SELECT
         gen_random_uuid() id,
         'Jamie' name,
-        '2026-02-26'::date created_on
+        '2026-02-26'::date created_on,
+        NULL sms_verified_on,
+        '2026-02-27'::date email_verified_on
     SQL
 
     user.created_on.should eq Date.new(2026, 2, 26)
+    user.sms_verified_on.should be_nil
+    user.email_verified_on.should eq Date.new(2026, 2, 27)
   end
 end
 
@@ -27,4 +31,6 @@ struct User
   getter id : UUID
   getter name : String
   getter created_on : Date
+  getter sms_verified_on : Date?
+  getter email_verified_on : Date?
 end
