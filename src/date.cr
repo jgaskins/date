@@ -67,6 +67,31 @@ struct Date
     self + 1.calendar_day
   end
 
+  def at_beginning_of_week(start_of_week : DayOfWeek) : self
+    self.class.new to_time.at_beginning_of_week(start_of_week)
+  end
+
+  def at_end_of_week(start_of_week : DayOfWeek) : self
+    # self.class.new to_time.at_end_of_week(start_of_week)
+    at_beginning_of_week(start_of_week) + 6.calendar_days
+  end
+
+  def at_beginning_of_month : self
+    self.class.new to_time.at_beginning_of_month
+  end
+
+  def at_end_of_month : self
+    self.class.new to_time.at_end_of_month
+  end
+
+  def at_beginning_of_year : self
+    self.class.new to_time.at_beginning_of_year
+  end
+
+  def at_end_of_year : self
+    self.class.new to_time.at_end_of_year
+  end
+
   private def validate!
     Time.local(year, month, day)
   rescue ex : ArgumentError

@@ -61,6 +61,38 @@ describe Date do
     Date.new(2026, 1, 7).day_of_week.should eq Date::DayOfWeek::Wednesday
   end
 
+  describe "shifting to boundaries of larger units of time" do
+    date = Date.new(2026, 2, 26)
+
+    it "shifts to the beginning of the week" do
+      date.at_beginning_of_week(:sunday).should eq Date.new(2026, 2, 22)
+      date.at_beginning_of_week(:monday).should eq Date.new(2026, 2, 23)
+    end
+
+    it "shifts to the end of the week" do
+      date.at_end_of_week(:sunday).should eq Date.new(2026, 2, 28)
+      date.at_end_of_week(:monday).should eq Date.new(2026, 3, 1)
+    end
+
+    it "shifts to the beginning of the month" do
+      date.at_beginning_of_month.should eq Date.new(2026, 2, 1)
+    end
+
+    it "shifts to the end of the month" do
+      date.at_end_of_month.should eq Date.new(2026, 2, 28)
+      # Leap year
+      Date.new(2024, 2, 26).at_end_of_month.should eq Date.new(2024, 2, 29)
+    end
+
+    it "shifts to the beginning of the year" do
+      date.at_beginning_of_year.should eq Date.new(2026, 1, 1)
+    end
+
+    it "shifts to the end of the year" do
+      date.at_end_of_year.should eq Date.new(2026, 12, 31)
+    end
+  end
+
   it "converts Times to Dates" do
     Time.local(2026, 1, 7, 12, 34, 56).to_date.should eq Date.new(2026, 1, 7)
   end
