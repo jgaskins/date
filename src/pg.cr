@@ -1,5 +1,7 @@
 require "pg"
 
+require "./date"
+
 struct Date
   def self.new(rs : DB::ResultSet)
     # The `pg` gem parses Postgres `date` columns as Crystal `Time` values
