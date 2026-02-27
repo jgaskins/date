@@ -7,6 +7,9 @@ authors:
 dependencies:
   duration:
     github: jgaskins/duration
+development_dependencies:
+  pg:
+    github: will/crystal-pg
 
 crystal: '>= 1.18.2'
 
