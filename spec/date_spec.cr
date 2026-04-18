@@ -111,19 +111,152 @@ describe Date do
     count.should eq 365
   end
 
-  it "parses dates" do
-    Date.parse("2026-01-07").should eq Date.new(2026, 1, 7)
+  describe "formatting as a string" do
+    it "converts into a YYYY-MM-DD string by default" do
+      Date.new(2026, 1, 2).to_s.should eq "2026-01-02"
+      Date.new(2026, 12, 31).to_s.should eq "2026-12-31"
+    end
+
+    describe "using formatting strings" do
+      date = Date.new(2026, 4, 17)
+
+      it "emits a short day name" do
+        date.to_s("%a").should eq "Fri"
+      end
+
+      it "emits an uppercase short day name" do
+        date.to_s("%^a").should eq "FRI"
+      end
+
+      it "emits a day name" do
+        date.to_s("%A").should eq "Friday"
+      end
+
+      it "emits an uppercase day name" do
+        date.to_s("%^A").should eq "FRIDAY"
+      end
+
+      it "emits a short month name" do
+        date.to_s("%b").should eq "Apr"
+        # The duplication is a little confusing, but this is the same as what
+        # `Time::Format` does.
+        date.to_s("%h").should eq "Apr"
+      end
+
+      it "emits an uppercase short month name" do
+        date.to_s("%^b").should eq "APR"
+      end
+
+      it "emits a month name" do
+        date.to_s("%B").should eq "April"
+      end
+
+      it "emits an uppercase day of the month" do
+        date.to_s("%^B").should eq "APRIL"
+      end
+
+      it "emits the century" do
+        date.to_s("%C").should eq "20"
+      end
+
+      it "emits the day of the month, zero-padded" do
+        Date.new(2026, 4, 7).to_s("%d").should eq "07"
+      end
+
+      it "emits the day of the month" do
+        Date.new(2026, 4, 7).to_s("%-d").should eq "7"
+      end
+
+      it "emits MM/DD/YY" do
+        date.to_s("%D").should eq "04/17/26"
+        date.to_s("%x").should eq "04/17/26"
+      end
+
+      it "emits the day of the month, blank-padded" do
+        Date.new(2026, 4, 7).to_s("%e").should eq " 7"
+      end
+
+      it "emits an ISO8601 date" do
+        date.to_s("%F").should eq "2026-04-17"
+      end
+
+      it "emits the week-based calendar year modulo 100" do
+        date.to_s("%g").should eq "26"
+      end
+
+      it "emits the week-based calendar year" do
+        date.to_s("%G").should eq "2026"
+      end
+
+      it "emits the day of the year, zero-padded to 3 digits" do
+        Date.new(2026, 1, 23).to_s("%j").should eq "023"
+      end
+
+      it "emits the month number, zero-padded" do
+        date.to_s("%m").should eq "04"
+      end
+
+      it "emits the month number, blank-padded" do
+        date.to_s("%_m").should eq " 4"
+      end
+
+      it "emits the month number" do
+        date.to_s("%-m").should eq "4"
+      end
+
+      it "emits the numeric day of the week 1..7" do
+        date.to_s("%u").should eq "5"
+        (date + 2.calendar_days).to_s("%u").should eq "7"
+      end
+
+      it "emits the ISO calendar week of the week-based year" do
+        date.to_s("%V").should eq "16"
+      end
+
+      it "emits the numeric day of the week 0..6" do
+        date.to_s("%w").should eq "5"
+        (date + 2.calendar_days).to_s("%w").should eq "0"
+      end
+
+      it "emits the year modulo 100" do
+        date.to_s("%y").should eq "26"
+      end
+
+      it "emits the year, zero-padded" do
+        date.to_s("%Y").should eq "2026"
+        Date.new(1, 1, 1).to_s("%Y").should eq "0001"
+      end
+
+      it "emits multiple values with additional text" do
+        date.to_s("Today is %A, %B %-d, %Y")
+          .should eq "Today is Friday, April 17, 2026"
+      end
+
+      it "emits a newline character" do
+        date.to_s("%n").should eq "\n"
+      end
+
+      it "emits a tab character" do
+        date.to_s("%t").should eq "\t"
+      end
+    end
   end
 
-  it "raises an ArgumentError when the date is invalid" do
-    [
-      "2026-02-29", # 2026 is not a leap year
-      "2026-00-01", # There is no 0th month
-      "2026-13-01", # There is no 13th month
-      "Nope",
-    ].each do |date_string|
-      expect_raises ArgumentError do
-        Date.parse date_string
+  describe "parsing" do
+    it "parses dates" do
+      Date.parse("2026-01-07").should eq Date.new(2026, 1, 7)
+    end
+
+    it "raises an ArgumentError when the date is invalid" do
+      [
+        "2026-02-29", # 2026 is not a leap year
+        "2026-00-01", # There is no 0th month
+        "2026-13-01", # There is no 13th month
+        "Nope",
+      ].each do |date_string|
+        expect_raises ArgumentError do
+          Date.parse date_string
+        end
       end
     end
   end
